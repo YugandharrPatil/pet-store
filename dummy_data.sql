@@ -1,0 +1,8 @@
+-- Dummy Data for Pet Store Products
+INSERT INTO public.pet_products (name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls) VALUES
+('Premium Kibble', 'High-quality dry food for adult dogs. Rich in protein.', 45.99, 100, 'dog', 'adult', 'Chicken, Brown Rice, Peas', 'Feed 2 cups daily per 50 lbs body weight.', ARRAY['https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80']),
+('Puppy Growth Formula', 'Specially formulated for growing puppies.', 49.99, 50, 'dog', 'puppy', 'Lamb, Sweet Potato, Salmon Oil', 'Feed 1 cup daily per 10 lbs body weight.', ARRAY['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=80']),
+('Senior Dog Joy', 'Easy to chew kibble with joint support.', 42.99, 30, 'dog', 'senior', 'Turkey, Oatmeal, Glucosamine', 'Feed 1.5 cups daily per 50 lbs body weight.', ARRAY['https://images.unsplash.com/photo-1544568100-847a948585b9?w=500&q=80']),
+('Kitten Starter Pack', 'Nutrient-rich food for energetic kittens.', 35.99, 80, 'cat', 'kitten', 'Chicken, Fish Meal, Cranberries', 'Feed 1/2 cup daily.', ARRAY['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&q=80']),
+('Indoor Cat Delight', 'Weight control formula for adult cats.', 38.99, 120, 'cat', 'adult', 'Salmon, Lentils, Pumpkin', 'Feed 3/4 cup daily.', ARRAY['https://images.unsplash.com/photo-1501820488136-72669149e0d4?w=500&q=80']),
+('Senior Feline Care', 'Kidney-friendly wet food for older cats.', 2.99, 200, 'cat', 'senior', 'Tuna, Broth, Vitamins', 'Feed 2 cans daily.', ARRAY['https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=500&q=80']);

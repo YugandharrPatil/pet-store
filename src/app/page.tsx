@@ -1,65 +1,83 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { TABLES } from "@/lib/constants/db-tables";
+import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+// Force dynamic rendering to prevent build errors without env vars
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+	const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+	// Fetch some featured products
+	const { data: featuredProducts } = await supabase.from(TABLES.PRODUCTS).select("*").limit(4);
+
+	return (
+		<div className="flex flex-col min-h-screen">
+			{/* Hero Section */}
+			<section className="w-full bg-primary/10 py-12 md:py-24 lg:py-32">
+				<div className="container px-4 md:px-6 mx-auto flex flex-col items-center text-center space-y-4">
+					<div className="space-y-2">
+						<h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">Everything Your Pet Loves</h1>
+						<p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">Discover premium food, toys, and accessories for your furry friends. Quality products for healthy and happy pets.</p>
+					</div>
+					<div className="space-x-4">
+						<Link href="/products">
+							<Button size="lg" variant="default">
+								Shop All Products
+							</Button>
+						</Link>
+					</div>
+				</div>
+			</section>
+
+			{/* Featured Products */}
+			<section className="w-full py-12 bg-muted/50">
+				<div className="container px-4 md:px-6 mx-auto">
+					<div className="flex items-center justify-between mb-8">
+						<h2 className="text-3xl font-bold tracking-tighter">Featured Products</h2>
+						<Link href="/products">
+							<Button variant="ghost">View All</Button>
+						</Link>
+					</div>
+
+					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						{featuredProducts?.map((product) => (
+							<Card key={product.id} className="flex flex-col overflow-hidden">
+								<div className="aspect-square bg-muted relative">
+									{/* Fallback pattern if no image */}
+									{product.image_urls?.[0] ? (
+										<img src={product.image_urls[0]} alt={product.name} className="object-cover w-full h-full" />
+									) : (
+										<div className="absolute inset-0 flex flex-col items-center justify-center bg-secondary text-secondary-foreground space-y-2">
+											<span className="font-semibold text-lg">{product.name.substring(0, 2)}</span>
+										</div>
+									)}
+								</div>
+								<CardContent className="flex-1 p-4">
+									<h3 className="font-semibold text-lg line-clamp-1">{product.name}</h3>
+									<p className="text-sm text-muted-foreground capitalize">
+										{product.pet_type} • {product.age_group}
+									</p>
+								</CardContent>
+								<CardFooter className="p-4 pt-0 flex items-center justify-between">
+									<span className="font-bold">${product.price.toFixed(2)}</span>
+									<Link href={`/products/${product.id}`}>
+										<Button size="sm">Details</Button>
+									</Link>
+								</CardFooter>
+							</Card>
+						))}
+
+						{(!featuredProducts || featuredProducts.length === 0) && (
+							<div className="col-span-full text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">No products found. Be sure to run the `dummy_data.sql` script on your Supabase instance!</div>
+						)}
+					</div>
+				</div>
+			</section>
+		</div>
+	);
 }
