@@ -16,7 +16,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 	}
 
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 	const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 	// Fetch order details
@@ -25,14 +25,14 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 		.select(
 			`
       *,
-      users!inner(clerk_user_id),
-      order_items(*, pet_products(*))
+      pet_users!inner(clerk_user_id),
+      pet_order_items(*, pet_products(*))
     `,
 		)
 		.eq("id", id)
 		.single();
 
-	if (error || !order || order.users.clerk_user_id !== userId) {
+	if (error || !order || order.pet_users.clerk_user_id !== userId) {
 		notFound();
 	}
 
@@ -63,7 +63,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 							</div>
 
 							<div className="space-y-2 border-t pt-4">
-								{order.order_items.map((item: { id: string; quantity: number; price_at_purchase: number; pet_products: { name: string } }) => (
+								{order.pet_order_items.map((item: { id: string; quantity: number; price_at_purchase: number; pet_products: { name: string } }) => (
 									<div key={item.id} className="flex justify-between items-center text-sm">
 										<div className="flex items-center space-x-2">
 											<span className="font-medium">{item.quantity}x</span>

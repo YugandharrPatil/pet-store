@@ -4,4 +4,5 @@ export const TABLES = {
 	ADDRESSES: "pet_addresses",
 	ORDERS: "pet_orders",
 	ORDER_ITEMS: "pet_order_items",
+	CARTS: "pet_carts",
 } as const;

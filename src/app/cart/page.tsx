@@ -22,8 +22,9 @@ export default function CartPage() {
 		return <div className="container mx-auto px-4 py-8">Loading cart...</div>;
 	}
 
-	const shippingCost = cart.subtotal > 50 ? 0 : 5.99;
-	const total = cart.subtotal + shippingCost;
+	const subtotal = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
+	const shippingCost = subtotal > 50 ? 0 : 5.99;
+	const total = subtotal + shippingCost;
 
 	return (
 		<div className="container mx-auto px-4 py-8 md:py-12">
@@ -57,7 +58,18 @@ export default function CartPage() {
 
 										<div className="flex items-center justify-between mt-auto">
 											<div className="flex items-center border rounded-md">
-												<Button variant="ghost" size="icon" className="h-8 w-8 rounded-none" onClick={() => cart.updateQuantity(item.id, item.quantity - 1)}>
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-8 w-8 rounded-none"
+													onClick={() => {
+														if (item.quantity > 1) {
+															cart.updateQuantity(item.id, item.quantity - 1);
+														} else {
+															cart.removeItem(item.id);
+														}
+													}}
+												>
 													<Minus className="h-3 w-3" />
 												</Button>
 												<div className="w-10 text-center text-sm">{item.quantity}</div>
@@ -86,13 +98,13 @@ export default function CartPage() {
 								<div className="space-y-4 mb-6 text-sm">
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">Subtotal</span>
-										<span className="font-medium">${cart.subtotal.toFixed(2)}</span>
+										<span className="font-medium">${subtotal.toFixed(2)}</span>
 									</div>
 									<div className="flex justify-between">
 										<span className="text-muted-foreground">Shipping</span>
 										<span className="font-medium">{shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}</span>
 									</div>
-									{shippingCost > 0 && <p className="text-xs text-muted-foreground">Free shipping on orders over $50! You are ${(50 - cart.subtotal).toFixed(2)} away.</p>}
+									{shippingCost > 0 && <p className="text-xs text-muted-foreground">Free shipping on orders over $50! You are ${(50 - subtotal).toFixed(2)} away.</p>}
 
 									<div className="border-t pt-4 mt-4 flex justify-between">
 										<span className="font-semibold text-base">Total</span>

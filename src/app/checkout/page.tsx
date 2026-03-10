@@ -15,6 +15,7 @@ export default function CheckoutPage() {
 	const router = useRouter();
 	const { isLoaded, userId } = useAuth();
 
+	const [isSuccess, setIsSuccess] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [address, setAddress] = useState({
 		line_1: "",
@@ -29,23 +30,28 @@ export default function CheckoutPage() {
 		setMounted(true);
 	}, []);
 
+	useEffect(() => {
+		if (mounted && isLoaded && !isSuccess) {
+			if (cart.items.length === 0) {
+				router.push("/cart");
+			} else if (!userId) {
+				router.push("/sign-in?redirect_url=/checkout");
+			}
+		}
+	}, [mounted, isLoaded, cart.items.length, userId, router, isSuccess]);
+
 	if (!mounted || !isLoaded) {
 		return <div className="p-8 text-center">Loading...</div>;
 	}
 
-	// Redirect if cart empty or not signed in
-	if (cart.items.length === 0) {
-		router.push("/cart");
+	// Wait for redirect if conditions aren't met
+	if ((cart.items.length === 0 && !isSuccess) || !userId) {
 		return null;
 	}
 
-	if (!userId) {
-		router.push("/sign-in?redirect_url=/checkout");
-		return null;
-	}
-
-	const shippingCost = cart.subtotal > 50 ? 0 : 5.99;
-	const totalAmount = cart.subtotal + shippingCost;
+	const subtotal = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
+	const shippingCost = subtotal > 50 ? 0 : 5.99;
+	const totalAmount = subtotal + shippingCost;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -60,8 +66,10 @@ export default function CheckoutPage() {
 			});
 
 			const orderId = response.data.orderId;
+			setIsSuccess(true);
 			cart.clearCart();
 			router.push(`/order-confirmation/${orderId}`);
+			return;
 		} catch (error) {
 			console.error(error);
 			alert("Failed to place order. Please try again.");
@@ -139,7 +147,7 @@ export default function CheckoutPage() {
 							<div className="space-y-2 pt-4 border-t text-sm">
 								<div className="flex justify-between">
 									<p>Subtotal</p>
-									<p>${cart.subtotal.toFixed(2)}</p>
+									<p>${subtotal.toFixed(2)}</p>
 								</div>
 								<div className="flex justify-between">
 									<p>Shipping</p>

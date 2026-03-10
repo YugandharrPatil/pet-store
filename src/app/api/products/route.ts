@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 	const limit = parseInt(searchParams.get("limit") || "10");
 
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 	const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 	let query = supabase.from(TABLES.PRODUCTS).select("*", { count: "exact" });

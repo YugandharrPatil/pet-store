@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 		const { id, email_addresses, first_name, last_name } = evt.data;
 
 		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-		const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+		const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 
 		// We use service role key to bypass RLS for inserting a new user
 		const supabase = createClient(supabaseUrl, supabaseServiceKey);

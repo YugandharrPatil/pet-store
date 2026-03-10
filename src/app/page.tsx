@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 	const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 	// Fetch some featured products
@@ -71,10 +71,6 @@ export default async function Home() {
 								</CardFooter>
 							</Card>
 						))}
-
-						{(!featuredProducts || featuredProducts.length === 0) && (
-							<div className="col-span-full text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">No products found. Be sure to run the `dummy_data.sql` script on your Supabase instance!</div>
-						)}
 					</div>
 				</div>
 			</section>

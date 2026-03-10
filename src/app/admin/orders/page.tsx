@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export default async function AdminOrdersPage() {
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 	const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 	const { data: orders } = await supabase
@@ -29,7 +29,7 @@ export default async function AdminOrdersPage() {
 		// Cycle status: pending -> shipped -> delivered
 		const nextStatus = currentStatus === "pending" ? "shipped" : currentStatus === "shipped" ? "delivered" : "pending";
 
-		const dbAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+		const dbAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!);
 
 		await dbAdmin.from(TABLES.ORDERS).update({ status: nextStatus }).eq("id", id);
 		revalidatePath("/admin/orders");

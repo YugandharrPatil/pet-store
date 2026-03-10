@@ -3,12 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { TABLES } from "@/lib/constants/db-tables";
 import { createClient } from "@supabase/supabase-js";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 	const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 	const { data: product, error } = await supabase.from(TABLES.PRODUCTS).select("*").eq("id", id).single();
@@ -19,6 +21,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
 	return (
 		<div className="container mx-auto px-4 py-8 md:py-12">
+			<div className="mb-6">
+				<Link href="/products" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+					<ArrowLeft className="mr-2 h-4 w-4" />
+					Back to Products
+				</Link>
+			</div>
+
 			<div className="grid md:grid-cols-2 gap-8 lg:gap-12">
 				{/* Image Gallery */}
 				<div className="space-y-4">

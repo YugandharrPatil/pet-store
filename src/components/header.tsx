@@ -1,8 +1,9 @@
 import { CartSheet } from "@/components/cart-sheet";
+import { CartSync } from "@/components/cart-sync";
 import { Button } from "@/components/ui/button";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
-import { Cat, Dog } from "lucide-react";
+import { Cat, Dog, Package } from "lucide-react";
 import Link from "next/link";
 
 export async function Header() {
@@ -21,7 +22,7 @@ export async function Header() {
 							Home
 						</Link>
 						<Link href="/products" className="transition-colors hover:text-foreground/80 text-foreground/60">
-							All Products
+							Products
 						</Link>
 						<Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
 							About
@@ -33,6 +34,15 @@ export async function Header() {
 				</div>
 				<div className="flex flex-1 items-center justify-end space-x-4">
 					<nav className="flex items-center space-x-2">
+						<CartSync />
+						{userId && (
+							<Link href="/orders">
+								<Button variant="ghost" className="flex items-center gap-2">
+									<Package className="h-5 w-5" />
+									<span>Orders</span>
+								</Button>
+							</Link>
+						)}
 						<CartSheet />
 
 						{!userId ? (

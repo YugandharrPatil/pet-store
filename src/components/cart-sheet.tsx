@@ -25,6 +25,7 @@ export function CartSheet() {
 	}
 
 	const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+	const subtotal = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);
 
 	return (
 		<Sheet>
@@ -64,7 +65,18 @@ export function CartSheet() {
 
 										<div className="flex flex-1 items-end justify-between text-sm">
 											<div className="flex items-center border rounded-md">
-												<Button variant="ghost" size="icon" className="h-7 w-7 rounded-none" onClick={() => cart.updateQuantity(item.id, item.quantity - 1)}>
+												<Button
+													variant="ghost"
+													size="icon"
+													className="h-7 w-7 rounded-none"
+													onClick={() => {
+														if (item.quantity > 1) {
+															cart.updateQuantity(item.id, item.quantity - 1);
+														} else {
+															cart.removeItem(item.id);
+														}
+													}}
+												>
 													<Minus className="h-3 w-3" />
 												</Button>
 												<div className="w-8 text-center text-xs">{item.quantity}</div>
@@ -90,7 +102,7 @@ export function CartSheet() {
 					<div className="border-t pt-6 space-y-4">
 						<div className="flex justify-between text-base font-medium">
 							<p>Subtotal</p>
-							<p>${cart.subtotal.toFixed(2)}</p>
+							<p>${subtotal.toFixed(2)}</p>
 						</div>
 						<p className="text-sm text-muted-foreground">Shipping and taxes calculated at checkout.</p>
 						<Link href="/cart" className="block w-full">
