@@ -1,4 +1,5 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
@@ -48,4 +49,31 @@ export async function GET(request: Request) {
 			totalPages: count ? Math.ceil(count / limit) : 0,
 		},
 	});
+}
+
+export async function POST(request: Request) {
+	try {
+		const user = await currentUser();
+		if (!user || user.publicMetadata?.role !== "admin") {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
+
+		const body = await request.json();
+		const { name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls } = body;
+
+		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+		const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
+		const supabase = createClient(supabaseUrl, supabaseKey);
+
+		const { data, error } = await supabase.from(TABLES.PRODUCTS).insert({ name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls }).select().single();
+
+		if (error) {
+			return NextResponse.json({ error: error.message }, { status: 500 });
+		}
+
+		return NextResponse.json({ data });
+	} catch (error: unknown) {
+		const err = error as Error;
+		return NextResponse.json({ error: err.message }, { status: 500 });
+	}
 }

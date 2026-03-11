@@ -15,7 +15,7 @@ export default async function AdminOrdersPage() {
 		.select(
 			`
       *,
-      users!inner(email)
+      ${TABLES.USERS}(email, clerk_user_id)
     `,
 		)
 		.order("created_at", { ascending: false });
@@ -66,7 +66,7 @@ export default async function AdminOrdersPage() {
 							orders.map((order) => (
 								<TableRow key={order.id}>
 									<TableCell className="font-mono text-xs">{order.id.split("-")[0]}</TableCell>
-									<TableCell>{order.users.email}</TableCell>
+									<TableCell>{order.pet_users?.email || "N/A"}</TableCell>
 									<TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
 									<TableCell className="font-medium">${order.total_amount.toFixed(2)}</TableCell>
 									<TableCell>

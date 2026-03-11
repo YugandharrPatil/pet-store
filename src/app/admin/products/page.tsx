@@ -1,3 +1,4 @@
+import { ProductFormDialog } from "@/components/product-form-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -32,7 +33,7 @@ export default async function AdminProductsPage() {
 					<h1 className="text-3xl font-bold tracking-tight">Product Management</h1>
 					<p className="text-muted-foreground mt-2">Manage your catalog, stock, and pricing.</p>
 				</div>
-				<Button>Add New Product</Button>
+				<ProductFormDialog mode="create" />
 			</div>
 
 			<div className="rounded-md border bg-background">
@@ -78,12 +79,15 @@ export default async function AdminProductsPage() {
 										)}
 									</TableCell>
 									<TableCell className="text-right">
-										<form action={deleteProduct}>
-											<input type="hidden" name="id" value={product.id} />
-											<Button variant="ghost" size="icon" type="submit" className="text-destructive hover:text-destructive hover:bg-destructive/10">
-												<Trash2 className="h-4 w-4" />
-											</Button>
-										</form>
+										<div className="flex items-center justify-end gap-1">
+											<ProductFormDialog mode="edit" product={product} />
+											<form action={deleteProduct}>
+												<input type="hidden" name="id" value={product.id} />
+												<Button variant="ghost" size="icon" type="submit" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+													<Trash2 className="h-4 w-4" />
+												</Button>
+											</form>
+										</div>
 									</TableCell>
 								</TableRow>
 							))
