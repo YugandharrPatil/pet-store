@@ -1,12 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TABLES } from "@/lib/constants/db-tables";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { DollarSign, Package, ShoppingBag } from "lucide-react";
 
 export default async function AdminDashboardPage() {
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 	// Fetch basic stats
 	const { count: productsCount } = await supabase.from(TABLES.PRODUCTS).select("*", { count: "exact", head: true });

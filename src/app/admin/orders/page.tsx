@@ -2,14 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TABLES } from "@/lib/constants/db-tables";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+
 import { revalidatePath } from "next/cache";
 
 export default async function AdminOrdersPage() {
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
 	const { data: orders } = await supabase
 		.from(TABLES.ORDERS)
 		.select(
@@ -29,9 +26,9 @@ export default async function AdminOrdersPage() {
 		// Cycle status: pending -> shipped -> delivered
 		const nextStatus = currentStatus === "pending" ? "shipped" : currentStatus === "shipped" ? "delivered" : "pending";
 
-		const dbAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!);
 
-		await dbAdmin.from(TABLES.ORDERS).update({ status: nextStatus }).eq("id", id);
+
+		await supabase.from(TABLES.ORDERS).update({ status: nextStatus }).eq("id", id);
 		revalidatePath("/admin/orders");
 		revalidatePath("/account");
 	}

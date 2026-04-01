@@ -1,4 +1,4 @@
-import { ProductList } from "@/components/product-list";
+import ProductList from "@/components/product-list";
 import { Suspense } from "react";
 
 export default function ProductsPage() {

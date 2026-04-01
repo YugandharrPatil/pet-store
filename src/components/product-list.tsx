@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-interface Product {
+type Product = {
 	id: string;
 	name: string;
 	description: string;
@@ -21,9 +21,9 @@ interface Product {
 	pet_type: string;
 	age_group: string;
 	image_urls: string[];
-}
+};
 
-export function ProductList() {
+export default function ProductList() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -73,7 +73,7 @@ export function ProductList() {
 	return (
 		<div className="flex flex-col md:flex-row gap-8">
 			{/* Sidebar Filters */}
-			<div className="w-full md:w-64 space-y-6 flex-shrink-0">
+			<div className="w-full md:w-64 space-y-6 shrink-0">
 				<form onSubmit={handleSearch} className="flex gap-2">
 					<Input placeholder="Search products..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
 					<Button type="submit" size="icon" variant="secondary">
@@ -133,10 +133,10 @@ export function ProductList() {
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{Array.from({ length: 8 }).map((_, i) => (
 							<div key={i} className="flex flex-col space-y-3">
-								<Skeleton className="h-[200px] w-full rounded-xl" />
+								<Skeleton className="h-50 w-full rounded-xl" />
 								<div className="space-y-2">
-									<Skeleton className="h-4 w-[250px]" />
-									<Skeleton className="h-4 w-[200px]" />
+									<Skeleton className="h-4 w-62.5" />
+									<Skeleton className="h-4 w-50" />
 								</div>
 							</div>
 						))}
@@ -152,6 +152,7 @@ export function ProductList() {
 						</Button>
 					</div>
 				) : (
+					// success condition (render all products)
 					<>
 						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
 							{data.data.map((product: Product) => (

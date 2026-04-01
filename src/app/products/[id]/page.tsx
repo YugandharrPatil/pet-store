@@ -1,18 +1,15 @@
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { Badge } from "@/components/ui/badge";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 import { TABLES } from "@/lib/constants/db-tables";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
 	const { data: product, error } = await supabase.from(TABLES.PRODUCTS).select("*").eq("id", id).single();
 
 	if (error || !product) {
@@ -30,18 +27,28 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
 			<div className="grid md:grid-cols-2 gap-8 lg:gap-12">
 				{/* Image Gallery */}
-				<div className="space-y-4">
-					<div className="aspect-square relative overflow-hidden rounded-xl border bg-muted flex items-center justify-center">
-						{product.image_urls?.[0] ? <img src={product.image_urls[0]} alt={product.name} className="object-cover w-full h-full" /> : <span className="text-muted-foreground font-semibold text-xl">No Image</span>}
-					</div>
-					{/* Thumbnails if multiple images exist */}
-					{product.image_urls?.length > 1 && (
-						<div className="flex gap-4 overflow-auto pb-2">
-							{product.image_urls.map((url: string, i: number) => (
-								<button key={i} className="relative w-20 h-20 rounded-md overflow-hidden border">
-									<img src={url} alt={`${product.name} thumbnail`} className="object-cover w-full h-full" />
-								</button>
-							))}
+				<div className="w-full relative">
+					{product.image_urls && product.image_urls?.length > 0 ? (
+						<Carousel className="w-full">
+							<CarouselContent>
+								{product.image_urls.map((url: string, i: number) => (
+									<CarouselItem key={i}>
+										<div className="aspect-square relative overflow-hidden rounded-xl border bg-muted flex items-center justify-center">
+											<img src={url} alt={`${product.name} - Image ${i + 1}`} className="object-cover w-full h-full" />
+										</div>
+									</CarouselItem>
+								))}
+							</CarouselContent>
+							{product.image_urls.length > 1 && (
+								<>
+									<CarouselPrevious className="left-4" />
+									<CarouselNext className="right-4" />
+								</>
+							)}
+						</Carousel>
+					) : (
+						<div className="aspect-square relative overflow-hidden rounded-xl border bg-muted flex items-center justify-center">
+							<span className="text-muted-foreground font-semibold text-xl">No Image</span>
 						</div>
 					)}
 				</div>
@@ -67,7 +74,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
 					<div className="space-y-4">
 						<div className="flex items-center gap-4">
-							<span className="font-medium min-w-[100px]">Stock Status:</span>
+							<span className="font-medium min-w-25">Stock Status:</span>
 							{product.stock > 0 ? <Badge className="bg-green-600 hover:bg-green-700">In Stock ({product.stock})</Badge> : <Badge variant="destructive">Out of Stock</Badge>}
 						</div>
 					</div>

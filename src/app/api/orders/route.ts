@@ -1,6 +1,6 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -13,9 +13,7 @@ export async function POST(req: Request) {
 		const body = await req.json();
 		const { items, shippingAddress, totalAmount, shippingCost } = body;
 
-		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-		const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || ""; // bypassing RLS for safe server creation
-		const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 		// Get the internal Supabase user ID from Clerk ID
 		const { data: user, error: userError } = await supabase.from(TABLES.USERS).select("id").eq("clerk_user_id", userId).single();

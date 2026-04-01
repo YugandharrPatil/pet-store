@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { CalendarDays, CheckCircle2, MapPin, Package } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -15,9 +15,7 @@ export default async function OrderConfirmationPage({ params }: { params: Promis
 		redirect("/sign-in");
 	}
 
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 	// Fetch order details
 	const { data: order, error } = await supabase

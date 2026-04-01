@@ -1,6 +1,6 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { currentUser } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -14,9 +14,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 		const body = await request.json();
 		const { name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls } = body;
 
-		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-		const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-		const supabase = createClient(supabaseUrl, supabaseKey);
+
 
 		const { data, error } = await supabase.from(TABLES.PRODUCTS).update({ name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls }).eq("id", id).select().single();
 

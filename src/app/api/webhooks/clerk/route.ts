@@ -1,6 +1,6 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
@@ -54,11 +54,7 @@ export async function POST(req: Request) {
 	if (eventType === "user.created") {
 		const { id, email_addresses, first_name, last_name } = evt.data;
 
-		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-		const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
 
-		// We use service role key to bypass RLS for inserting a new user
-		const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 		const email = email_addresses[0]?.email_address;
 		const name = [first_name, last_name].filter(Boolean).join(" ");

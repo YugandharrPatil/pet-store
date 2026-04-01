@@ -1,6 +1,6 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -8,7 +8,7 @@ export async function GET() {
 		const { userId } = await auth();
 		if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-		const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!);
+
 		let { data: user } = await supabase.from(TABLES.USERS).select("id").eq("clerk_user_id", userId).maybeSingle();
 
 		// If user doesn't exist yet (Clerk webhook race condition), create a ghost user
@@ -42,7 +42,7 @@ export async function PUT(req: Request) {
 		const body = await req.json();
 		const items = body.items || [];
 
-		const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!);
+
 		let { data: user } = await supabase.from(TABLES.USERS).select("id").eq("clerk_user_id", userId).maybeSingle();
 
 		// If user doesn't exist yet, create a ghost user

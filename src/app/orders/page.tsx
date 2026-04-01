@@ -2,8 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { Package } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -15,9 +15,7 @@ export default async function OrdersPage() {
 		redirect("/sign-in");
 	}
 
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 	// Fetch all orders with details for this specific securely scoped user id
 	const { data: orders, error } = await supabase

@@ -1,6 +1,6 @@
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { currentUser } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -12,9 +12,7 @@ export async function GET(request: Request) {
 	const page = parseInt(searchParams.get("page") || "1");
 	const limit = parseInt(searchParams.get("limit") || "10");
 
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 
 	let query = supabase.from(TABLES.PRODUCTS).select("*", { count: "exact" });
 
@@ -61,9 +59,7 @@ export async function POST(request: Request) {
 		const body = await request.json();
 		const { name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls } = body;
 
-		const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-		const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-		const supabase = createClient(supabaseUrl, supabaseKey);
+
 
 		const { data, error } = await supabase.from(TABLES.PRODUCTS).insert({ name, description, price, stock, pet_type, age_group, ingredients, feeding_guide, image_urls }).select().single();
 

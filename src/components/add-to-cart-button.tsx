@@ -2,19 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/use-cart";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
+import { Database } from "@/types/database.types";
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 
-interface AddToCartProps {
-	product: {
-		id: string;
-		name: string;
-		price: number;
-		image_urls: string[];
-		stock: number;
-	};
-}
-
-export function AddToCartButton({ product }: AddToCartProps) {
+export function AddToCartButton({ product }: { product: Database["public"]["Tables"]["pet_products"]["Row"] }) {
 	const items = useCart((state) => state.items);
 	const addItem = useCart((state) => state.addItem);
 	const removeItem = useCart((state) => state.removeItem);
@@ -66,7 +57,7 @@ export function AddToCartButton({ product }: AddToCartProps) {
 				</div>
 			) : (
 				<div className="flex items-center gap-4">
-					<span className="font-medium min-w-[100px]">
+					<span className="font-medium min-w-25">
 						{quantityInCart} item{quantityInCart > 1 ? "s" : ""} in cart
 					</span>
 					<div className="flex items-center border rounded-md">
@@ -78,6 +69,9 @@ export function AddToCartButton({ product }: AddToCartProps) {
 							<Plus className="h-4 w-4" />
 						</Button>
 					</div>
+					<Button variant="ghost" size="sm" className="text-destructive font-medium h-auto p-0" onClick={() => removeItem(product.id)}>
+						<Trash2 className="h-4 w-4 mr-1" /> Remove
+					</Button>
 				</div>
 			)}
 		</div>

@@ -1,16 +1,14 @@
+import { DeleteProductButton } from "@/components/delete-product-button";
 import { ProductFormDialog } from "@/components/product-form-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TABLES } from "@/lib/constants/db-tables";
-import { createClient } from "@supabase/supabase-js";
-import { Trash2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+
 import { revalidatePath } from "next/cache";
 
 export default async function AdminProductsPage() {
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || "";
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 	const { data: products } = await supabase.from(TABLES.PRODUCTS).select("*").order("created_at", { ascending: false });
 
@@ -19,9 +17,9 @@ export default async function AdminProductsPage() {
 		"use server";
 		const id = formData.get("id") as string;
 
-		const dbAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!);
 
-		await dbAdmin.from(TABLES.PRODUCTS).delete().eq("id", id);
+
+		await supabase.from(TABLES.PRODUCTS).delete().eq("id", id);
 		revalidatePath("/admin/products");
 		revalidatePath("/products");
 	}
@@ -81,12 +79,7 @@ export default async function AdminProductsPage() {
 									<TableCell className="text-right">
 										<div className="flex items-center justify-end gap-1">
 											<ProductFormDialog mode="edit" product={product} />
-											<form action={deleteProduct}>
-												<input type="hidden" name="id" value={product.id} />
-												<Button variant="ghost" size="icon" type="submit" className="text-destructive hover:text-destructive hover:bg-destructive/10">
-													<Trash2 className="h-4 w-4" />
-												</Button>
-											</form>
+											<DeleteProductButton productId={product.id} productName={product.name} deleteAction={deleteProduct} />
 										</div>
 									</TableCell>
 								</TableRow>

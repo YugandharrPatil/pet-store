@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Cat, Dog, Heart, ShieldCheck, Truck } from "lucide-react";
-import Image from "next/image";
 
 export default function AboutPage() {
 	return (
@@ -9,7 +8,7 @@ export default function AboutPage() {
 			<section className="w-full bg-primary/10 py-16 md:py-24">
 				<div className="container px-4 md:px-6 mx-auto text-center space-y-4">
 					<h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-primary">About PawfectPets</h1>
-					<p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">We believe every pet deserves the absolute best. Our mission is to provide premium quality products that make tails wag and motors purr.</p>
+					<p className="mx-auto max-w-175 text-muted-foreground md:text-xl">We believe every pet deserves the absolute best. Our mission is to provide premium quality products that make tails wag and motors purr.</p>
 				</div>
 			</section>
 
@@ -21,7 +20,7 @@ export default function AboutPage() {
 							<h2 className="text-3xl font-bold tracking-tighter">Our Story</h2>
 							<p className="text-muted-foreground text-lg">Founded in 2024 by a team of passionate animal lovers, PawfectPets started with a simple belief: our pets are family, and they deserve family-quality care.</p>
 							<p className="text-muted-foreground text-lg">
-								We grew frustrated with the lack of transparent, high-quality, and affordable pet products on the market. That's why we set out to curate a selection of the finest food, most durable toys, and coziest beds, rigorously testing
+								We grew frustrated with the lack of transparent, high-quality, and affordable pet products on the market. That&apos;s why we set out to curate a selection of the finest food, most durable toys, and coziest beds, rigorously testing
 								everything with our own furry friends first.
 							</p>
 						</div>
@@ -64,7 +63,7 @@ export default function AboutPage() {
 									<Truck className="h-6 w-6" />
 								</div>
 								<h3 className="text-xl font-semibold">Fast & Reliable</h3>
-								<p className="text-muted-foreground">We understand that running out of kibble is an emergency. That's why we ensure fast, reliable shipping on all orders.</p>
+								<p className="text-muted-foreground">We understand that running out of kibble is an emergency. That&apos;s why we ensure fast, reliable shipping on all orders.</p>
 							</CardContent>
 						</Card>
 					</div>

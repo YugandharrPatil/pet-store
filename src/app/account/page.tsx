@@ -2,8 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TABLES } from "@/lib/constants/db-tables";
+import { supabase } from "@/lib/supabase";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -15,9 +15,7 @@ export default async function AccountPage() {
 		redirect("/sign-in");
 	}
 
-	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-	const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || ""; // read-only context bypass RLS
-	const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
 	// Get Supabase User ID
 	const { data: dbUser } = await supabase.from(TABLES.USERS).select("id").eq("clerk_user_id", userId).single();
